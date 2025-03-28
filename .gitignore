@@ -1,0 +1,51 @@
+# Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment directories
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE or Editor specific files
+.idea/
+.vscode/
+
+# MacOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python distribution and packaging
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# Test and coverage reports
+.coverage
+*.coveragerc
+nosetests.xml
+coverage.xml
+*.hypothesis/
+
+# Logs and database files
+*.log
+*.sqlite3
+
+# Pytest cache
+.pytest_cache/
+
+# Environment configuration files
+.env
+.env.*
