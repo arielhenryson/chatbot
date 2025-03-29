@@ -7,8 +7,6 @@ import chainlit as cl
 import chainlit.data as cl_data
 from history import push_msg_to_db
 from mongo_datalayer import MongoDBDataLayer
-from langchain_core.messages import HumanMessage, AIMessage
-from langchain.schema.runnable.config import RunnableConfig
 
 llm = ChatGoogleGenerativeAI(
    model="gemini-1.5-flash",
