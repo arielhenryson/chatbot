@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from langchain_google_genai import ChatGoogleGenerativeAI
 load_dotenv()
 import os
 from typing import Dict, Optional
@@ -9,10 +10,11 @@ from mongo_datalayer import MongoDBDataLayer
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain.schema.runnable.config import RunnableConfig
 
-os.environ["GOOGLE_API_KEY"] = "AIzaSyAc9UQ5uKUrjIa_cG0XdmRiJ6S_mhsUGVU"
-cl_data._data_layer = MongoDBDataLayer(os.getenv("MONGODB_URI"), "chainlit_db") # type: ignore
+llm = ChatGoogleGenerativeAI(
+   model="gemini-1.5-flash",
+)
 
-from flow import graph
+cl_data._data_layer = MongoDBDataLayer(os.getenv("MONGODB_URI"), "chainlit_db") # type: ignore
 
 @cl.oauth_callback
 def oauth_callback(
@@ -25,30 +27,13 @@ def oauth_callback(
 
 @cl.on_message
 async def main(msg: cl.Message):
-    # await push_msg_to_db(message.content, "user_message")
-    # # Your custom logic goes here...
-    config = {"configurable": {"thread_id": cl.context.session.id}}
-    cb = cl.LangchainCallbackHandler()
-    final_answer = cl.Message(content="")
-
-    config = {"configurable": {"thread_id": cl.context.session.id}}
-    cb = cl.LangchainCallbackHandler()
-    final_answer = cl.Message(content="")
+    await push_msg_to_db(msg.content, "user_message")
     
-    for msg, metadata in graph.stream({"messages": [HumanMessage(content=msg.content)]}, stream_mode="messages", config=RunnableConfig(callbacks=[cb], **config)):
-        if (
-            msg.content
-            and not isinstance(msg, HumanMessage)
-            and metadata["langgraph_node"] == "final"
-        ):
-            await final_answer.stream_token(msg.content)
+    response = llm.invoke(msg.content)
 
-    await final_answer.send()
+    await cl.Message(content=response.content).send()
 
-    
-
-     # LangGraph integration
-    # await push_msg_to_db(msg.content, "assistant_message")
+    await push_msg_to_db(response.content, "assistant_message")
 
 if __name__ == "__main__":
     from chainlit.cli import run_chainlit

@@ -1,6 +1,5 @@
 chainlit==2.4.302
 python-dotenv==1.1.0
 motor==3.7.0
-langgraph==0.3.21
 langchain==0.3.21
 langchain-google-genai==2.1.2
